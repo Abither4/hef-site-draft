@@ -1,0 +1,812 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Haiti Endowment Fund — Website Draft</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Working draft of a redesigned Haiti Endowment Fund website.">
+
+<style>
+__FONTS__
+
+/* ================= tokens ================= */
+:root{
+  --ground:#F5F2E4;
+  --surface:#FFFDF5;
+  --band:#E9E6D2;
+  --ink:#15271B;
+  --ink-soft:#4C6153;
+  --line:#D3D0BB;
+
+  --forest:#0E5930;
+  --forest-deep:#0A3F22;
+  --forest-dark:#072B17;
+  --mint:#8FCFA0;
+  --mint-soft:#C6E6CF;
+  --gold:#F2CB14;
+  --gold-deep:#C9A400;
+  --clay:#EF3C22;
+
+  --on-dark:#F0EED8;
+  --on-dark-soft:#B3CDBB;
+
+  --shadow:0 1px 2px rgba(10,40,22,.06),0 14px 30px -20px rgba(10,40,22,.4);
+  --measure:64ch;
+  --pad:clamp(1.25rem,5vw,4.5rem);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --ground:#08150D; --surface:#0E2115; --band:#0B1B11;
+    --ink:#EDEAD5; --ink-soft:#9DBAA6; --line:#1F3927;
+    --forest:#8FCFA0; --forest-deep:#0E2A19; --forest-dark:#050F09;
+    --mint:#8FCFA0; --mint-soft:#1B3A25;
+    --gold:#F2CB14; --gold-deep:#F2CB14; --clay:#FF6A4F;
+    --shadow:0 1px 2px rgba(0,0,0,.5),0 16px 34px -20px rgba(0,0,0,.9);
+  }
+}
+:root[data-theme="dark"]{
+  --ground:#08150D; --surface:#0E2115; --band:#0B1B11;
+  --ink:#EDEAD5; --ink-soft:#9DBAA6; --line:#1F3927;
+  --forest:#8FCFA0; --forest-deep:#0E2A19; --forest-dark:#050F09;
+  --mint:#8FCFA0; --mint-soft:#1B3A25;
+  --gold:#F2CB14; --gold-deep:#F2CB14; --clay:#FF6A4F;
+  --shadow:0 1px 2px rgba(0,0,0,.5),0 16px 34px -20px rgba(0,0,0,.9);
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--ground);color:var(--ink);
+  font-family:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:clamp(1rem,.96rem + .2vw,1.075rem);line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit}
+
+/* ================= type ================= */
+h1,h2,h3,.display{
+  font-family:'Bebas Neue',Impact,'Haettenschweiler','Arial Narrow',sans-serif;
+  font-weight:400;text-transform:uppercase;letter-spacing:.015em;line-height:.92;
+  text-wrap:balance;margin:0;
+}
+h1{font-size:clamp(2.9rem,8.5vw,6.4rem)}
+h2{font-size:clamp(2.1rem,5vw,3.6rem)}
+h3{font-size:clamp(1.28rem,2.1vw,1.55rem);line-height:1}
+p{margin:0}
+
+.eyebrow{
+  font-family:'Barlow',sans-serif;font-weight:600;font-size:.75rem;
+  letter-spacing:.2em;text-transform:uppercase;color:var(--gold-deep);
+  display:flex;align-items:center;gap:.75rem;
+}
+.eyebrow::after{content:"";height:2px;flex:1;max-width:5rem;background:var(--gold-deep)}
+.eyebrow.on-dark{color:var(--gold)}
+.eyebrow.on-dark::after{background:var(--gold)}
+.eyebrow.center{justify-content:center}
+.eyebrow.center::before{content:"";height:2px;flex:1;max-width:5rem;background:currentColor}
+
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.lede{font-size:clamp(1.1rem,1.02rem + .45vw,1.35rem);line-height:1.55;color:var(--ink-soft)}
+.measure{max-width:var(--measure)}
+strong{font-weight:700}
+
+/* ================= layout ================= */
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:var(--pad)}
+section{padding-block:clamp(3.5rem,8vw,6.5rem)}
+.stack{display:flex;flex-direction:column;gap:1.5rem}
+.stack.tight{gap:1rem}
+.dark{background:var(--forest-dark);color:var(--on-dark)}
+.dark .lede{color:var(--on-dark-soft)}
+.forest{background:var(--forest-deep);color:var(--on-dark)}
+.forest .lede{color:var(--on-dark-soft)}
+.band{background:var(--band)}
+
+/* ================= nav ================= */
+.nav{
+  position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:1.5rem;
+  padding:.7rem var(--pad);background:rgba(7,43,23,.94);backdrop-filter:blur(10px);
+  border-bottom:2px solid var(--gold);
+}
+.nav img{height:34px;width:auto;margin-right:auto}
+.nav-links{display:flex;gap:1.3rem;align-items:center}
+.nav-toggle{display:none}
+.nav-links a{
+  color:var(--on-dark);text-decoration:none;font-weight:600;font-size:.76rem;
+  letter-spacing:.12em;text-transform:uppercase;padding-block:.35rem;
+  border-bottom:2px solid transparent;
+}
+.nav-links a:hover,.nav-links a:focus-visible{border-bottom-color:var(--gold)}
+@media (max-width:900px){
+  .nav-toggle{
+    display:inline-flex;align-items:center;gap:.45rem;cursor:pointer;
+    background:transparent;border:1px solid rgba(240,238,216,.45);border-radius:2px;
+    color:var(--on-dark);padding:.5rem .85rem;
+    font:700 .7rem/1 'Barlow',sans-serif;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .nav-links{
+    position:absolute;top:100%;left:0;right:0;display:none;
+    flex-direction:column;align-items:stretch;gap:0;
+    background:var(--forest-dark);border-bottom:2px solid var(--gold);
+    padding:.25rem var(--pad) 1rem;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{padding:.9rem 0;border-bottom:1px solid rgba(240,238,216,.14);font-size:.85rem}
+}
+
+/* ================= buttons ================= */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:.5rem;
+  font-family:'Barlow',sans-serif;font-weight:700;font-size:.82rem;
+  letter-spacing:.14em;text-transform:uppercase;padding:.85rem 1.6rem;
+  border:2px solid transparent;border-radius:2px;text-decoration:none;cursor:pointer;
+  transition:background-color .18s ease,color .18s ease,border-color .18s ease,transform .18s ease;
+}
+.btn-give{background:var(--gold);color:#14261B;border-color:var(--gold)}
+.btn-give:hover{background:var(--gold-deep);border-color:var(--gold-deep);transform:translateY(-1px)}
+.btn-ghost{border-color:currentColor;color:inherit;background:transparent}
+.btn-ghost:hover{background:currentColor;color:var(--forest-dark)}
+.btn.sm{padding:.55rem 1.05rem;font-size:.72rem}
+a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+/* ================= hero ================= */
+.hero{position:relative;min-height:clamp(560px,84vh,880px);display:flex;align-items:flex-end;overflow:hidden}
+.hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.hero-scrim{
+  position:absolute;inset:0;
+  background:
+    linear-gradient(to top,rgba(5,20,11,.96) 0%,rgba(5,20,11,.74) 36%,rgba(5,20,11,.16) 70%,rgba(5,20,11,.4) 100%),
+    linear-gradient(to right,rgba(7,43,23,.8) 0%,rgba(7,43,23,.04) 62%);
+}
+.hero-inner{position:relative;width:100%;padding-block:clamp(2.5rem,7vw,5rem);color:var(--on-dark)}
+.hero h1{margin-block:.6rem .9rem}
+.hero h1 .accent{color:var(--gold)}
+.hero-sub{max-width:54ch;font-size:clamp(1.05rem,1rem + .4vw,1.3rem);color:#DCE7DB}
+.hero-cta{display:flex;flex-wrap:wrap;gap:.85rem;margin-top:1.9rem}
+@media (min-width:700px) and (max-width:899px){
+  .hero{min-height:600px}
+}
+@media (max-width:699px){
+  .hero{display:block;min-height:0;background:var(--forest-dark)}
+  .hero-img{position:static;height:auto;aspect-ratio:4/3;object-position:center 40%}
+  .hero-scrim{display:none}
+  .hero-inner{padding-block:1.9rem 2.4rem}
+  .hero h1{font-size:clamp(2.6rem,13vw,3.6rem)}
+}
+.verse{
+  margin-top:2.2rem;padding-left:1.1rem;border-left:3px solid var(--gold);
+  max-width:60ch;font-style:italic;color:#CBD9C9;font-size:.98rem;line-height:1.5;
+}
+
+/* ================= stats ================= */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:2px;background:var(--gold)}
+.stat{background:var(--forest-deep);padding:2rem 1.4rem;text-align:center}
+.stat .n{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(2.6rem,5.2vw,3.9rem);
+  line-height:.9;color:var(--gold);font-variant-numeric:tabular-nums;
+}
+.stat .l{margin-top:.55rem;font-size:.8rem;letter-spacing:.09em;text-transform:uppercase;color:var(--on-dark-soft);font-weight:600}
+
+/* ================= grids ================= */
+.grid{display:grid;gap:clamp(1rem,2.2vw,1.6rem)}
+.g2{grid-template-columns:repeat(auto-fit,minmax(330px,1fr))}
+.g3{grid-template-columns:repeat(auto-fit,minmax(268px,1fr))}
+.split{display:grid;grid-template-columns:1fr;gap:clamp(1.75rem,4vw,3.5rem);align-items:center}
+@media (min-width:900px){.split{grid-template-columns:1.05fr .95fr}.split.rev>:first-child{order:2}}
+
+/* ================= cards ================= */
+.card{
+  background:var(--surface);border:1px solid var(--line);border-top:3px solid var(--forest);
+  border-radius:3px;padding:1.5rem 1.4rem;box-shadow:var(--shadow);
+  display:flex;flex-direction:column;gap:.55rem;
+}
+.card h3{color:var(--forest)}
+.card p{font-size:.95rem;color:var(--ink-soft)}
+.dark .card,.forest .card{background:rgba(240,238,216,.06);border-color:rgba(240,238,216,.16);border-top-color:var(--gold);box-shadow:none}
+.dark .card h3,.forest .card h3{color:var(--on-dark)}
+.dark .card p,.forest .card p{color:var(--on-dark-soft)}
+
+.photo{border-radius:3px;overflow:hidden;box-shadow:var(--shadow);margin:0}
+.photo img{width:100%;height:auto;display:block}
+@media (min-width:700px){.photo img{height:100%;object-fit:cover;aspect-ratio:4/3}
+  .photo-wide img{aspect-ratio:16/9}}
+
+/* ================= numbered steps ================= */
+.step{display:flex;gap:1.1rem;align-items:flex-start}
+.step .num{
+  flex:none;width:2.9rem;height:2.9rem;border-radius:50%;
+  background:var(--mint);color:var(--forest-deep);
+  display:grid;place-items:center;
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:1.35rem;letter-spacing:.02em;
+}
+.dark .step .num,.forest .step .num{background:var(--gold);color:var(--forest-dark)}
+.step h3{color:var(--forest);margin-bottom:.35rem}
+.dark .step h3,.forest .step h3{color:var(--on-dark)}
+.step p{color:var(--ink-soft);font-size:.96rem}
+.dark .step p,.forest .step p{color:var(--on-dark-soft)}
+
+/* ================= prayer list ================= */
+.prayer{list-style:none;margin:0;padding:0;display:grid;gap:.85rem}
+.prayer li{
+  display:flex;gap:.85rem;align-items:flex-start;
+  padding-bottom:.85rem;border-bottom:1px solid rgba(240,238,216,.16);
+  font-size:1.02rem;color:var(--on-dark);
+}
+.prayer li:last-child{border-bottom:0;padding-bottom:0}
+.prayer li::before{
+  content:"";flex:none;width:.55rem;height:.55rem;margin-top:.55rem;
+  background:var(--gold);transform:rotate(45deg);
+}
+
+/* ================= program tiles ================= */
+.progs{list-style:none;margin:0;padding:0;display:grid;gap:1px;background:rgba(240,238,216,.18)}
+@media (min-width:640px){.progs{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:1000px){.progs{grid-template-columns:repeat(4,1fr)}}
+
+.prog{
+  background:var(--forest-deep);padding:1.75rem 1.4rem 1.6rem;
+  display:flex;flex-direction:column;gap:.5rem;
+  border-top:3px solid transparent;
+  transition:background-color .25s ease,border-top-color .25s ease,transform .25s ease;
+}
+.prog:hover,.prog:focus-within{background:var(--forest-dark);border-top-color:var(--gold);transform:translateY(-4px)}
+.prog .fig{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:clamp(2.5rem,4.4vw,3.4rem);
+  line-height:.86;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:.01em;
+  transition:color .25s ease;
+}
+.prog .unit{
+  font-size:.68rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mint);margin-bottom:.4rem;
+}
+.prog h3{color:var(--on-dark);font-size:1.15rem}
+.prog p{font-size:.93rem;line-height:1.5;color:var(--on-dark-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.35rem;list-style:none;padding:0}
+.chips li{
+  font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  border:1px solid rgba(143,207,160,.45);color:var(--mint);
+  padding:.2rem .55rem;border-radius:999px;
+}
+
+/* Staggered reveal. Tiles are visible by default; the hiding rule only
+   applies once JS confirms it can bring them back. */
+.js-reveal .reveal{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s ease}
+.js-reveal .reveal.in{opacity:1;transform:none}
+@media (max-width:899px){
+  .review-bar{right:.6rem;bottom:.6rem;padding:.3rem .3rem .3rem .7rem;font-size:.62rem;gap:.4rem;opacity:.92}
+  .review-bar button{font-size:.6rem;padding:.35rem .7rem}
+}
+@media (prefers-reduced-motion:reduce){.js-reveal .reveal{opacity:1;transform:none;transition:none}}
+
+/* ================= letters ================= */
+.letter{
+  background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--forest);
+  padding:clamp(1.6rem,4vw,2.6rem);box-shadow:var(--shadow);border-radius:3px;
+}
+.dark .letter,.forest .letter{background:rgba(240,238,216,.06);border-color:rgba(240,238,216,.16);border-left-color:var(--gold)}
+.sig{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.7rem;letter-spacing:.03em;color:var(--forest)}
+.dark .sig,.forest .sig{color:var(--gold)}
+.sig-role{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:600}
+.dark .sig-role,.forest .sig-role{color:var(--on-dark-soft)}
+
+/* ================= give ================= */
+.give-box{
+  border:1px solid rgba(240,238,216,.22);border-top:3px solid var(--gold);
+  padding:1.6rem 1.5rem;display:flex;flex-direction:column;gap:.7rem;
+  background:rgba(240,238,216,.05);
+}
+.give-box h3{color:var(--on-dark)}
+.give-box p{color:var(--on-dark-soft);font-size:.95rem}
+.mono{font-variant-numeric:tabular-nums;letter-spacing:.01em}
+
+/* ================= on-page giving ================= */
+.give-panel{
+  background:rgba(240,238,216,.06);border:1px solid rgba(240,238,216,.22);
+  border-top:3px solid var(--gold);padding:1.75rem 1.6rem;
+  display:flex;flex-direction:column;gap:1.15rem;
+}
+.field-label{
+  font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mint);margin-bottom:.55rem;
+}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(240,238,216,.3);border-radius:2px;overflow:hidden}
+.seg button{
+  font-family:'Barlow',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:.7rem .5rem;border:0;cursor:pointer;
+  background:transparent;color:var(--on-dark);transition:background-color .18s ease,color .18s ease;
+}
+.seg button + button{border-left:1px solid rgba(240,238,216,.3)}
+.seg button[aria-pressed="true"]{background:var(--gold);color:#14261B}
+
+.amts{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
+.amt{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:.02em;
+  padding:.75rem .4rem;cursor:pointer;border:1px solid rgba(240,238,216,.3);
+  background:transparent;color:var(--on-dark);border-radius:2px;
+  font-variant-numeric:tabular-nums;
+  transition:background-color .18s ease,color .18s ease,border-color .18s ease;
+}
+.amt:hover{border-color:var(--gold)}
+.amt[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#14261B}
+.amt.other{font-family:'Barlow',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
+
+.custom-wrap{display:none;gap:.5rem;align-items:center}
+.custom-wrap.on{display:flex}
+.custom-wrap .cur{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.6rem;color:var(--gold)}
+.custom-wrap input{
+  flex:1;font-family:'Barlow',sans-serif;font-size:1.05rem;font-weight:600;
+  background:rgba(5,20,11,.55);color:var(--on-dark);
+  border:1px solid rgba(240,238,216,.3);border-radius:2px;padding:.6rem .7rem;
+}
+.custom-wrap input:focus{outline:2px solid var(--gold);outline-offset:1px}
+
+.give-summary{
+  font-size:.95rem;color:var(--on-dark-soft);
+  padding-top:.9rem;border-top:1px solid rgba(240,238,216,.18);
+}
+.give-summary strong{color:var(--gold);font-weight:700}
+.btn-give[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+.pending{
+  font-size:.78rem;letter-spacing:.04em;color:var(--mint);
+  display:flex;gap:.5rem;align-items:flex-start;
+}
+.pending::before{content:"";flex:none;width:.5rem;height:.5rem;margin-top:.45rem;background:var(--gold);transform:rotate(45deg)}
+
+/* callout / safety note */
+.note{
+  border-left:4px solid var(--clay);background:var(--surface);
+  padding:1.1rem 1.3rem;font-size:.97rem;color:var(--ink-soft);box-shadow:var(--shadow);
+}
+.dark .note,.forest .note{background:rgba(240,238,216,.06);color:var(--on-dark-soft)}
+
+/* ================= footer ================= */
+footer{background:var(--forest-dark);color:var(--on-dark);padding-block:clamp(2.5rem,5vw,4rem) 2rem;border-top:4px solid var(--gold)}
+footer img.mark{height:46px;width:auto;margin-bottom:1.1rem}
+footer a{color:var(--on-dark-soft);text-decoration:none}
+footer a:hover{color:var(--gold);text-decoration:underline}
+.foot-grid{display:grid;gap:2rem;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.foot-h{font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;font-weight:700;color:var(--gold);margin-bottom:.7rem}
+.foot-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.45rem;font-size:.92rem;color:var(--on-dark-soft)}
+.foot-bottom{margin-top:2.5rem;padding-top:1.25rem;border-top:1px solid rgba(240,238,216,.18);font-size:.79rem;color:var(--on-dark-soft);display:flex;flex-wrap:wrap;gap:.75rem;justify-content:space-between}
+
+/* ================= review mode ================= */
+.review-bar{
+  position:fixed;right:1rem;bottom:1rem;z-index:60;display:flex;align-items:center;gap:.6rem;
+  background:var(--forest-dark);color:var(--on-dark);border:1px solid var(--gold);
+  border-radius:999px;padding:.5rem .5rem .5rem 1rem;box-shadow:0 8px 30px -10px rgba(0,0,0,.6);
+  font-size:.75rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+}
+.review-bar button{
+  font-family:inherit;font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;font-weight:700;
+  background:var(--gold);color:#14261B;border:0;border-radius:999px;padding:.45rem 1rem;cursor:pointer;
+}
+.sec-tag{
+  position:absolute;top:.5rem;left:.5rem;z-index:5;background:var(--clay);color:#fff;
+  font-size:.68rem;font-weight:700;letter-spacing:.12em;padding:.25rem .6rem;border-radius:2px;display:none;
+}
+body.review [data-sec]{position:relative;outline:2px dashed var(--clay);outline-offset:-6px}
+body.review .sec-tag{display:block}
+
+@media (prefers-reduced-motion:reduce){*{animation-duration:.001ms !important;transition-duration:.001ms !important}}
+</style>
+
+<nav class="nav">
+  <img src="__IMG_LOGO_LIGHT__" alt="Haiti Endowment Fund">
+  <button type="button" class="nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks">Menu</button>
+  <div class="nav-links" id="navLinks">
+    <a href="#about">Who We Are</a>
+    <a href="#do">What We Do</a>
+    <a href="#now">Right Now</a>
+    <a href="#pray">Pray</a>
+  </div>
+  <a href="#help" class="btn btn-give sm">Give</a>
+</nav>
+
+<header class="hero" data-sec><span class="sec-tag">S1 &middot; Hero</span>
+  <img class="hero-img" src="__IMG_HERO__" alt="Students at their desks in a Maranatha school classroom">
+  <div class="hero-scrim"></div>
+  <div class="hero-inner">
+    <div class="wrap">
+      <p class="eyebrow on-dark">Hinche &middot; Central Plateau &middot; Haiti</p>
+      <h1>The Call<br>Won&rsquo;t <span class="accent">Wait</span></h1>
+      <p class="hero-sub">For fifty years God has called and equipped us to share His love throughout Haiti. Through every hardship, the ministry has never stopped &mdash; because the Call hasn&rsquo;t either.</p>
+      <div class="hero-cta">
+        <a class="btn btn-give" href="#help">Give Today</a>
+        <a class="btn btn-ghost" href="#do">See The Work</a>
+      </div>
+      <p class="verse">&ldquo;But none of these things move me; nor do I count my life dear to myself, so that I may finish my race with joy, and the ministry which I received.&rdquo; &mdash; Acts 20:24</p>
+    </div>
+  </div>
+</header>
+
+<div class="stats" data-sec><span class="sec-tag">S2 &middot; Impact numbers</span>
+  <div class="stat"><div class="n">3,500</div><div class="l">Hot meals every school day</div></div>
+  <div class="stat"><div class="n">13</div><div class="l">Schools across the Central Plateau</div></div>
+  <div class="stat"><div class="n">17</div><div class="l">Churches supported</div></div>
+  <div class="stat"><div class="n">350+</div><div class="l">Haitians equipped to serve their own communities</div></div>
+</div>
+
+<section id="about" data-sec><span class="sec-tag">S3 &middot; Who we are</span>
+  <div class="wrap split">
+    <div class="stack">
+      <p class="eyebrow">Who We Are</p>
+      <h2>Equipping Boots<br>On The Ground</h2>
+      <p class="lede">From the very beginning, HEF believed that God wanted us to raise up, support and encourage the local Haitian body of Christ to minister to the community.</p>
+      <p class="measure">God has continued to bless HEF, ensuring that our ministry has never stopped. As more families move toward the Central Plateau where we serve &mdash; leading to increased school enrollment and a greater need for food, space, teachers, and logistics.</p>
+      <p class="measure">We have been able to sustain and expand our work by equipping and empowering <strong>over 350 Haitians</strong> to serve and teach within their own communities. Thanks to our partnership with Maranatha Church, HEF has successfully grown its ministry efforts year after year.</p>
+      <p class="measure">More than <strong>95 cents of every dollar</strong> goes straight to Haiti, funding the work that is going on there right now.</p>
+    </div>
+    <figure class="photo">
+      <img src="__IMG_FOUNDERS__" alt="Haiti Endowment Fund in its earliest years">
+    </figure>
+  </div>
+</section>
+
+<section id="do" class="forest" data-sec><span class="sec-tag">S4 &middot; What we do</span>
+  <div class="wrap stack">
+    <div class="stack tight">
+      <p class="eyebrow on-dark">What We Do</p>
+      <h2>Eight Ways The Work<br>Goes Forward</h2>
+    </div>
+    <ul class="progs">
+      <li class="prog reveal">
+        <div><div class="fig">17</div><div class="unit">Churches</div></div>
+        <h3>Local Churches</h3>
+        <p>Supported on an ongoing basis across the Upper Central Plateau.</p>
+      </li>
+      <li class="prog reveal">
+        <div><div class="fig">13</div><div class="unit">Schools</div></div>
+        <h3>Education</h3>
+        <p>Currently serving over 3,500 students, five days a week.</p>
+      </li>
+      <li class="prog reveal">
+        <div><div class="fig">3,500</div><div class="unit">Meals a day</div></div>
+        <h3>Feeding Program</h3>
+        <p>A hot meal in the schools, every single school day.</p>
+      </li>
+      <li class="prog reveal">
+        <div><div class="fig">200+</div><div class="unit">Patients a month</div></div>
+        <h3>Medical Ministry</h3>
+        <p>Diagnosis, medication and surgeries, year-round.</p>
+        <ul class="chips"><li>Full-time doctor</li><li>RN</li><li>Clinic</li><li>Pharmacy</li></ul>
+      </li>
+      <li class="prog reveal">
+        <div><div class="fig">6</div><div class="unit">Groups served</div></div>
+        <h3>Camps &amp; Conferences</h3>
+        <p>Camps, conferences and ministries organized for:</p>
+        <ul class="chips"><li>Youth</li><li>Kids</li><li>Pastors</li><li>Women</li><li>Teachers</li><li>VBS</li></ul>
+      </li>
+      <li class="prog reveal">
+        <div><div class="fig">Wells</div><div class="unit">&amp; solar pumps</div></div>
+        <h3>Clean Water</h3>
+        <p>Drilling and solar pump installation in villages, so families have water they can drink.</p>
+      </li>
+      <li class="prog reveal">
+        <div><div class="fig">3,500</div><div class="unit">Christmas gifts</div></div>
+        <h3>Christmas</h3>
+        <p>Distributed every year to students across the schools.</p>
+      </li>
+      <li class="prog reveal">
+        <div><div class="fig">125</div><div class="unit">Every month</div></div>
+        <h3>Widow &amp; Elder Care</h3>
+        <p>Hope and practical help delivered to 125 recipients monthly.</p>
+      </li>
+    </ul>
+    <div class="grid g3" style="margin-top:.5rem">
+      <figure class="photo"><img src="__IMG_DOORWAY__" alt="Preschool students in the doorway of their classroom"></figure>
+      <figure class="photo"><img src="__IMG_PORTRAIT__" alt="A student in her school uniform"></figure>
+      <figure class="photo"><img src="__IMG_ELDER__" alt="An elder cared for through the ministry"></figure>
+    </div>
+  </div>
+</section>
+
+
+<section id="now" class="band" data-sec><span class="sec-tag">S5 &middot; Happening now</span>
+  <div class="wrap stack">
+    <div class="stack tight">
+      <p class="eyebrow">On The Ground</p>
+      <h2>Happening Right Now</h2>
+      <p class="lede measure">Alongside the programs that run every day, this is what your giving is building at the moment.</p>
+    </div>
+    <div class="grid g3">
+      <article class="card"><h3>20 New Classrooms</h3><p>Twenty new village classrooms are under construction across the plateau.</p></article>
+      <article class="card"><h3>Land For Expansion</h3><p>We purchased land adjoining one of our churches to make room for what comes next.</p></article>
+      <article class="card"><h3>Care For The Displaced</h3><p>Meals and essential care for over 450 people who have had to leave their homes.</p></article>
+      <article class="card"><h3>Youth Camp</h3><p>More than 200 young people come together for a week of camp each year.</p></article>
+      <article class="card"><h3>VBS In 8 Villages</h3><p>Summer Vacation Bible School reaches over 1,000 children across eight villages.</p></article>
+      <article class="card"><h3>Women&rsquo;s Learning Center</h3><p>Equipping women with valuable, income-earning skills.</p></article>
+      <article class="card"><h3>Cargo Shipments</h3><p>Containers of medications, Bibles, sound equipment and school supplies, arriving on an ongoing basis.</p></article>
+      <article class="card"><h3>Wells &amp; Solar Water</h3><p>A new well and a solar-powered distribution system, most recently in a village on the plateau.</p></article>
+    </div>
+    <div class="grid g3" style="margin-top:.5rem">
+      <figure class="photo"><img src="__IMG_COOKING__" alt="Preparing the daily school meal"></figure>
+      <figure class="photo"><img src="__IMG_CAMP__" alt="Young people gathered for youth camp"></figure>
+      <figure class="photo"><img src="__IMG_MEALTIME__" alt="Students receiving their hot meal at school"></figure>
+    </div>
+  </div>
+</section>
+
+<section id="pray" class="dark" data-sec><span class="sec-tag">S6 &middot; The call to pray</span>
+  <div class="wrap split">
+    <div class="stack">
+      <p class="eyebrow on-dark">The Call To Pray</p>
+      <h2>Ways You Can<br>Pray With Us</h2>
+      <ul class="prayer">
+        <li>Peace and stability across the country of Haiti</li>
+        <li>Wisdom and strength for HEF leadership</li>
+        <li>Safety and protection for volunteers, staff, and children</li>
+        <li>Growth and impact through the Deaf Ministry, and for Mark and Jena</li>
+        <li>God&rsquo;s guidance and provision for Iliobert and Marie</li>
+        <li>Health and vitality for Maranatha Churches and Schools</li>
+        <li>That God would work powerfully through our medical team and outreach</li>
+        <li>Ongoing financial support to sustain and expand the ministry</li>
+      </ul>
+    </div>
+    <div class="stack">
+      <figure class="photo"><img src="__IMG_CLASSWIDE__" alt="A full classroom of students at a village school"></figure>
+      <div class="give-box">
+        <h3>Stay In The Know</h3>
+        <p>Join our prayer list to stay informed and receive the latest updates on the needs and happenings in Haiti.</p>
+        <a class="btn btn-give" href="#" style="align-self:flex-start;margin-top:.3rem">Sign Up Here</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="help" data-sec><span class="sec-tag">S7 &middot; How to help</span>
+  <div class="wrap stack">
+    <div class="stack tight">
+      <p class="eyebrow">How To Help</p>
+      <h2>Three Ways To Stand With Haiti</h2>
+    </div>
+    <div class="grid g3">
+      <div class="step">
+        <div class="num">01</div>
+        <div><h3>Pray</h3><p>Please pray that God continues to provide for HEF and guides us to remain faithful to His will every step of the way.</p></div>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <div><h3>Support</h3><p>Please consider making a one-time or recurring financial gift to HEF to help meet the increasing ministry needs as the population of the Central Plateau continues to grow.</p></div>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <div><h3>Partner</h3><p>Partner with us and help serve alongside the work God is doing. We&rsquo;re continually finding new ways to serve, and as God leads, more needs arise. Stay connected with us &mdash; ask how you can help and receive updates on current opportunities to make a difference.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="forest" data-sec><span class="sec-tag">S8 &middot; Give</span>
+  <div class="wrap stack">
+    <div class="stack tight" style="text-align:center;align-items:center">
+      <p class="eyebrow on-dark center">Support The Work</p>
+      <h2>Give To Haiti</h2>
+      <p class="lede measure" style="margin-inline:auto">Your gift goes to work immediately &mdash; meals, classrooms, clean water and medical care, this week.</p>
+    </div>
+    <div class="grid g2">
+      <form class="give-panel" id="giveForm">
+        <div>
+          <div class="field-label">How often</div>
+          <div class="seg" role="group" aria-label="Giving frequency">
+            <button type="button" class="freq" data-freq="once" aria-pressed="true">One time</button>
+            <button type="button" class="freq" data-freq="monthly" aria-pressed="false">Monthly</button>
+          </div>
+        </div>
+
+        <div>
+          <div class="field-label">Amount</div>
+          <div class="amts" role="group" aria-label="Gift amount">
+            <button type="button" class="amt" data-amt="25" aria-pressed="false">$25</button>
+            <button type="button" class="amt" data-amt="50" aria-pressed="true">$50</button>
+            <button type="button" class="amt" data-amt="100" aria-pressed="false">$100</button>
+            <button type="button" class="amt" data-amt="250" aria-pressed="false">$250</button>
+            <button type="button" class="amt" data-amt="500" aria-pressed="false">$500</button>
+            <button type="button" class="amt other" data-amt="other" aria-pressed="false">Other</button>
+          </div>
+          <div class="custom-wrap" id="customWrap">
+            <span class="cur" aria-hidden="true">$</span>
+            <label class="sr-only" for="customAmt">Other amount in dollars</label>
+            <input type="number" id="customAmt" min="1" step="1" inputmode="numeric" placeholder="Enter an amount">
+          </div>
+        </div>
+
+        <p class="give-summary" id="giveSummary">A <strong>$50</strong> gift, one time.</p>
+        <button type="submit" class="btn btn-give" id="giveSubmit">Give $50</button>
+        <p class="pending" id="givePending">Secure card checkout connects next week. Until then, please use the mailing address to the right &mdash; or call us and we&rsquo;ll take it over the phone.</p>
+      </form>
+
+      <div class="give-box">
+        <h3>Give By Mail</h3>
+        <p>Make checks payable to Haiti Endowment Fund.</p>
+        <p class="mono" style="color:var(--on-dark)">Haiti Endowment Fund<br>P.O. Box 743<br>Temecula, CA 92593</p>
+        <p style="margin-top:.6rem">Prefer to give over the phone? Call <a href="tel:+19515019822" style="color:var(--gold);font-weight:700">(951) 501-9822</a>.</p>
+      </div>
+    </div>
+    <figure class="photo photo-wide" style="margin-top:1rem"><img src="__IMG_SUNSET__" alt="The Central Plateau at day’s end"></figure>
+  </div>
+</section>
+
+<section id="letter" class="band" data-sec><span class="sec-tag">S9 &middot; Letters</span>
+  <div class="wrap stack">
+    <div class="stack tight">
+      <p class="eyebrow">In Their Words</p>
+      <h2>A Word From Our Leadership</h2>
+    </div>
+    <div class="grid g2">
+      <div class="letter stack">
+        <p>We are deeply grateful for all that God is doing through HEF&ndash;Maranatha Ministry, even amid the significant challenges facing Haiti, especially throughout the Central Plateau. Your prayers, partnership, and generosity make every blessing possible.</p>
+        <p>The Call before us continues, even as Haiti faces hardship. Yet the Call remains as firm and compelling today as it was when it began &mdash; unchanged, unwavering, and filled with purpose.</p>
+        <p>We remember that the same Jesus who came as Emmanuel &mdash; God with us &mdash; is still with Haiti. That renews our hope and strengthens our expectation: <strong>The Call Continues.</strong> The story is far from over, and we believe the most powerful chapters of God&rsquo;s work in Haiti are yet to come.</p>
+        <div><div class="sig">Kevin &amp; Cindy</div><div class="sig-role">Haiti Endowment Fund</div></div>
+      </div>
+      <div class="letter stack">
+        <p>On behalf of all the Maranatha Churches of the Upper Central Plateau, Marie and I would like to express our deepest gratitude to all of you who, in one way or another, have supported us. Truly, we can say, &ldquo;The Lord has done great things for us, and we are filled with joy.&rdquo;</p>
+        <p>Thank you for your prayers, your generosity, your love, and your constant encouragement. Because of your support, our schools are well structured and well supervised. The parents and the students have received tremendous blessings, and they are very grateful.</p>
+        <div><div class="sig">Pastor Iliobert &amp; Marie</div><div class="sig-role">Maranatha Churches, Upper Central Plateau</div></div>
+      </div>
+    </div>
+    <div class="letter" style="text-align:center;border-left:0;border-top:4px solid var(--gold)">
+      <p class="lede" style="color:var(--ink)">For 50 years, God has called and equipped us to share His love throughout Haiti. His light shines through every part of this ministry. We&rsquo;re deeply thankful for our <strong>Friends of Haiti</strong> &mdash; your prayers and support help make this mission possible.</p>
+    </div>
+  </div>
+</section>
+
+<footer data-sec><span class="sec-tag">S10 &middot; Footer</span>
+  <div class="wrap">
+    <img class="mark" src="__IMG_LOGO_LIGHT__" alt="Haiti Endowment Fund">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-h">Contact</div>
+        <ul class="foot-list">
+          <li><a href="mailto:info@haitiendowment.com">info@haitiendowment.com</a></li>
+          <li><a href="tel:+19515019822">(951) 501-9822</a></li>
+          <li>P.O. Box 743<br>Temecula, CA 92593</li>
+        </ul>
+      </div>
+      <div>
+        <div class="foot-h">About</div>
+        <ul class="foot-list">
+          <li><a href="#about">Who We Are</a></li>
+          <li><a href="#do">What We Do</a></li>
+          <li><a href="#letter">From Our Leadership</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="foot-h">Get Involved</div>
+        <ul class="foot-list">
+          <li><a href="#help">How To Help</a></li>
+          <li><a href="#pray">Pray With Us</a></li>
+          <li><a href="#help">Give</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="foot-h">Follow</div>
+        <ul class="foot-list">
+          <li><a href="https://www.facebook.com/haitiendowmentfund/">Facebook</a></li>
+          <li><a href="https://www.youtube.com/channel/UCog7dpzLgK9-mgAd9vt-v8A">YouTube</a></li>
+          <li><a href="https://www.instagram.com/haitiendowment/">Instagram</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>&copy; 2026 Haiti Endowment Fund &middot; A 501(c)(3) non-profit organization</span>
+      <span>#ruinedforthenormal</span>
+    </div>
+  </div>
+</footer>
+
+<div class="review-bar">
+  <span>Draft</span>
+  <button type="button" id="rv">Review mode</button>
+</div>
+
+<script>
+  var navToggle = document.getElementById('navToggle');
+  var navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', function () {
+    var open = navLinks.classList.toggle('open');
+    navToggle.setAttribute('aria-expanded', String(open));
+    navToggle.textContent = open ? 'Close' : 'Menu';
+  });
+  navLinks.addEventListener('click', function (e) {
+    if (e.target.tagName !== 'A') return;
+    navLinks.classList.remove('open');
+    navToggle.setAttribute('aria-expanded', 'false');
+    navToggle.textContent = 'Menu';
+  });
+
+  var b = document.getElementById('rv');
+  b.addEventListener('click', function () {
+    var on = document.body.classList.toggle('review');
+    b.textContent = on ? 'Hide labels' : 'Review mode';
+  });
+
+  // Staggered reveal for the program tiles.
+  var items = document.querySelectorAll('.reveal');
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!reduced && 'IntersectionObserver' in window) {
+    document.documentElement.classList.add('js-reveal');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        var i = [].indexOf.call(items, e.target);
+        e.target.style.transitionDelay = (i % 4) * 90 + 'ms';
+        e.target.classList.add('in');
+        io.unobserve(e.target);
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    items.forEach(function (el) { io.observe(el); });
+  }
+
+  /* ---------------------------------------------------------------
+     Giving form.
+
+     STRIPE WIRE-UP (next week): set STRIPE_ENDPOINT to the URL of a
+     function that creates an embedded Checkout Session and returns
+     { clientSecret }. Everything below already collects and validates
+     amount + frequency; submit() is the only place that needs to change.
+     Leave STRIPE_ENDPOINT null and the button stays honestly disabled.
+  --------------------------------------------------------------- */
+  var STRIPE_ENDPOINT = null;
+
+  var form = document.getElementById('giveForm');
+  if (form) {
+    var customWrap = document.getElementById('customWrap');
+    var customAmt = document.getElementById('customAmt');
+    var summary = document.getElementById('giveSummary');
+    var submit = document.getElementById('giveSubmit');
+    var pending = document.getElementById('givePending');
+    var state = { amount: 50, freq: 'once', custom: false };
+
+    function money(n) { return '$' + Number(n).toLocaleString('en-US'); }
+
+    function render() {
+      var valid = state.amount > 0;
+      var when = state.freq === 'monthly' ? 'every month' : 'one time';
+      summary.innerHTML = valid
+        ? 'A <strong>' + money(state.amount) + '</strong> gift, ' + when + '.'
+        : 'Choose an amount to continue.';
+      submit.textContent = valid ? 'Give ' + money(state.amount) : 'Give';
+      submit.disabled = !valid || !STRIPE_ENDPOINT;
+      pending.hidden = !!STRIPE_ENDPOINT;
+    }
+
+    form.querySelectorAll('.freq').forEach(function (b) {
+      b.addEventListener('click', function () {
+        state.freq = b.dataset.freq;
+        form.querySelectorAll('.freq').forEach(function (o) {
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+        render();
+      });
+    });
+
+    form.querySelectorAll('.amt').forEach(function (b) {
+      b.addEventListener('click', function () {
+        form.querySelectorAll('.amt').forEach(function (o) {
+          o.setAttribute('aria-pressed', String(o === b));
+        });
+        state.custom = b.dataset.amt === 'other';
+        customWrap.classList.toggle('on', state.custom);
+        if (state.custom) {
+          state.amount = Number(customAmt.value) || 0;
+          customAmt.focus();
+        } else {
+          state.amount = Number(b.dataset.amt);
+        }
+        render();
+      });
+    });
+
+    customAmt.addEventListener('input', function () {
+      if (!state.custom) return;
+      state.amount = Number(customAmt.value) || 0;
+      render();
+    });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      if (!STRIPE_ENDPOINT) return;
+      // Wired next week: create the Checkout Session, then mount it here.
+    });
+
+    render();
+  }
+</script>
