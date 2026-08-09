@@ -24,7 +24,8 @@ cp hef-draft.html ../index.html
 
 ```
 index.html          generated - do not edit
-hef-hero.mp4        the hero loop. the ONE file not inlined.
+hef-hero.mp4        the hero loop. not inlined.
+hef-music.m4a       the background music loop. not inlined.
 src/template.html   the page. edit this.
 src/build.py        inlines fonts + photos
 src/assets.json     photos, base64. keys map to __IMG_<KEY>__ tokens
@@ -56,6 +57,24 @@ underneath is what shows. Nothing breaks.
 To recut it, the source is the full highlight film. Note that the film's own
 title cards contain a last name and a Deaf School reference, so **only
 untitled footage can be used**.
+
+## The background music
+
+`hef-music.m4a` is 96 seconds of the film's own instrumental bed. HEF
+confirmed the track is theirs to use on the site.
+
+It **never autoplays**. The speaker button in the nav starts it, and because
+the nav is sticky that switch is reachable from anywhere on the page — nobody
+should have to scroll back to the top to make a website be quiet. It also
+pauses itself when the tab goes to the background, fades in and out rather
+than cutting, and hides its own button if the file fails to load.
+
+Volume is set in the script by `MUSIC_VOLUME` (currently `0.14` — deliberately
+faint). That one number is the whole tuning knob.
+
+`src/cut_music.py` builds the file. It is not a plain trim: the clip is
+constructed so its end and its start are the same moment in the source, which
+is what makes the loop seamless instead of clicking every 96 seconds.
 
 ## Publication rules
 
