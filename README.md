@@ -39,10 +39,12 @@ resizes, trims any letterbox bars, strips metadata, and writes the base64 into
 
 ## The hero video
 
-`hef-hero.mp4` is an 11-second silent loop cut from HEF's own 5-minute
-highlight film — three shots with no titles, no captions and no aerials, so it
-carries no content the publication rules exclude. It sits next to
-`index.html`; the page requests it by relative path.
+`hef-hero.mp4` is a 28-second silent loop cut from HEF's own 5-minute
+highlight film — eight shots with no titles, no captions, no aerials and no
+photo-montage segments, so it carries no content the publication rules
+exclude. It sits next to `index.html`; the page requests it by relative path.
+
+`src/cut_hero.py` is the recipe: edit the `SHOTS` list and re-run it to recut.
 
 It is deliberately **not** inlined, and the page treats it as optional. The
 `<video>` ships with no `src`; the script attaches the file only above 700px
