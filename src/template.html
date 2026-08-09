@@ -528,7 +528,7 @@ body.review .sec-tag{display:block}
   <div class="wrap stack">
     <div class="stack tight">
       <p class="eyebrow on-dark">What We Do</p>
-      <h2>Eight Ways The Work<br>Goes Forward</h2>
+      <h2>Eight Ways The Call<br>Goes Forward</h2>
     </div>
     <ul class="progs">
       <li class="prog reveal">
@@ -553,10 +553,14 @@ body.review .sec-tag{display:block}
         <ul class="chips"><li>Full-time doctor</li><li>RN</li><li>Clinic</li><li>Pharmacy</li></ul>
       </li>
       <li class="prog reveal">
-        <div><div class="fig">6</div><div class="unit">Groups served</div></div>
+        <!-- The label runs straight into the heading: "Groups served through /
+             Camps & Conferences", so the phrase reads once, not twice. -->
+        <div><div class="unit">Groups served through</div></div>
         <h3>Camps &amp; Conferences</h3>
-        <p>Camps, conferences and ministries organized for:</p>
-        <ul class="chips"><li>Youth</li><li>Kids</li><li>Pastors</li><li>Women</li><li>Teachers</li><li>VBS</li></ul>
+        <ul class="chips">
+          <li>Youth</li><li>Kids</li><li>Men</li><li>Women</li>
+          <li>Pastors</li><li>Teachers</li><li>VBS</li>
+        </ul>
       </li>
       <li class="prog reveal">
         <div><div class="fig">Wells</div><div class="unit">&amp; solar pumps</div></div>
@@ -589,7 +593,7 @@ body.review .sec-tag{display:block}
       <p class="eyebrow">One At A Time</p>
       <h2>Every Number<br>Has A Face</h2>
       <p class="lede">Three thousand five hundred meals a day is a number. This is what the number is for &mdash; one child, fed and taught and prayed over, five days a week.</p>
-      <p class="measure">Multiply that by thirteen schools across the Central Plateau, and that is the ministry.</p>
+      <p class="measure">Thirteen schools across the Central Plateau. Three thousand five hundred children in all &mdash; and every one of them a face.</p>
     </div>
   </div>
 </section>
@@ -939,7 +943,7 @@ body.review .sec-tag{display:block}
     /* If the browser refuses to start it on load, start it the instant the
        visitor does anything at all. Scrolling does not count as a gesture
        under the autoplay rules, so we listen for the ones that do. */
-    var gestures = ['pointerdown', 'keydown', 'touchstart'];
+    var gestures = ['pointerdown', 'mousedown', 'touchstart', 'click', 'keydown'];
     var waiting = false;
     function stopWaiting() {
       waiting = false;
@@ -950,7 +954,9 @@ body.review .sec-tag{display:block}
       stopWaiting();
       // If they went straight for the speaker, that click speaks for itself.
       if (onButton) return;
-      if (sndBtn.getAttribute('aria-pressed') !== 'true') startMusic();
+      if (sndBtn.getAttribute('aria-pressed') === 'true') return;
+      // If this attempt is refused too, go back to waiting rather than giving up.
+      startMusic(waitForGesture);
     }
     function waitForGesture() {
       if (waiting) return;
