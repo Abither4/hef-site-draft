@@ -63,11 +63,24 @@ untitled footage can be used**.
 `hef-music.m4a` is 96 seconds of the film's own instrumental bed. HEF
 confirmed the track is theirs to use on the site.
 
-It **never autoplays**. The speaker button in the nav starts it, and because
-the nav is sticky that switch is reachable from anywhere on the page — nobody
-should have to scroll back to the top to make a website be quiet. It also
-pauses itself when the tab goes to the background, fades in and out rather
-than cutting, and hides its own button if the file fails to load.
+It starts on its own, as far as the browser allows. **Every current browser
+blocks audio that starts without a user gesture**, so "plays on load" is not
+something a website can actually guarantee. The script asks anyway, and if it
+is refused it starts at the visitor's first click, tap or keypress instead —
+a second or two in for most people. Scrolling deliberately is not treated as
+that gesture, because browsers do not count it as one.
+
+What keeps that from being obnoxious:
+
+- The speaker button in the nav switches it off, and because the nav is
+  sticky that switch is reachable from anywhere on the page. Nobody should
+  have to scroll back to the top to make a website be quiet. (This is also
+  what WCAG 1.4.2 requires of any audio that plays for more than 3 seconds.)
+- **If someone switches it off, it stays off** — the choice is remembered in
+  `localStorage`, and on their next visit nothing is even downloaded.
+- It does not start at all on a connection reporting Save Data.
+- It pauses when the tab goes to the background, fades in and out rather than
+  cutting, and hides its own button if the file fails to load.
 
 Volume is set in the script by `MUSIC_VOLUME` (currently `0.14` — deliberately
 faint). That one number is the whole tuning knob.

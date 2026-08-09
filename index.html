@@ -854,16 +854,23 @@ body.review .sec-tag{display:block}
   /* ---------------------------------------------------------------
      Background music.
 
-     Never autoplays. Browsers block unmuted autoplay anyway, but the
-     real reason is that a site which starts making noise on its own
-     gets closed. The visitor asks for it, and can switch it off from
-     anywhere on the page.
+     It starts on its own. Every current browser blocks audio that
+     starts without the visitor doing something, so "on load" is not
+     actually available to us: we ask anyway, and if we are refused we
+     start at the first click, tap or keypress instead. In practice
+     that is a second or two in, and on browsers that do allow it the
+     music is there from the moment the page opens.
 
-     MUSIC_VOLUME is the one number to tune -- it is set low on purpose.
+     Two things keep that from being rude: it is faint, and the off
+     switch sits in the sticky nav where it is always reachable. If
+     someone turns it off we remember, and it stays off next time.
+
+     MUSIC_VOLUME is the one number to tune.
   --------------------------------------------------------------- */
   var MUSIC_SRC = 'hef-music.m4a';
   var MUSIC_VOLUME = 0.14;
   var MUSIC_FADE_MS = 900;
+  var MUSIC_OFF_KEY = 'hef-music-off';
 
   var sndBtn = document.getElementById('soundToggle');
   var music = document.getElementById('bgMusic');
@@ -890,13 +897,24 @@ body.review .sec-tag{display:block}
       sndBtn.setAttribute('aria-label', on ? 'Mute background music' : 'Play background music');
     }
 
-    function startMusic() {
+    // localStorage throws in some privacy modes, so never trust it bare.
+    function mutedByChoice() {
+      try { return localStorage.getItem(MUSIC_OFF_KEY) === '1'; } catch (e) { return false; }
+    }
+    function rememberChoice(off) {
+      try {
+        if (off) localStorage.setItem(MUSIC_OFF_KEY, '1');
+        else localStorage.removeItem(MUSIC_OFF_KEY);
+      } catch (e) { /* fine, it just will not persist */ }
+    }
+
+    function startMusic(onBlocked) {
       if (!music.src) music.src = MUSIC_SRC;
       music.volume = 0;
       var p = music.play();
       if (p && p.then) {
         p.then(function () { setPressed(true); fadeTo(MUSIC_VOLUME); })
-         .catch(function () { setPressed(false); });   // blocked -- leave it off
+         .catch(function () { setPressed(false); if (onBlocked) onBlocked(); });
       } else {
         setPressed(true);
         fadeTo(MUSIC_VOLUME);
@@ -909,9 +927,45 @@ body.review .sec-tag{display:block}
     }
 
     sndBtn.addEventListener('click', function () {
-      if (sndBtn.getAttribute('aria-pressed') === 'true') stopMusic();
-      else startMusic();
+      if (sndBtn.getAttribute('aria-pressed') === 'true') {
+        stopMusic();
+        rememberChoice(true);
+      } else {
+        startMusic();
+        rememberChoice(false);
+      }
     });
+
+    /* If the browser refuses to start it on load, start it the instant the
+       visitor does anything at all. Scrolling does not count as a gesture
+       under the autoplay rules, so we listen for the ones that do. */
+    var gestures = ['pointerdown', 'keydown', 'touchstart'];
+    var waiting = false;
+    function stopWaiting() {
+      waiting = false;
+      gestures.forEach(function (t) { document.removeEventListener(t, onGesture, true); });
+    }
+    function onGesture(e) {
+      var onButton = e.target && e.target.closest && e.target.closest('#soundToggle');
+      stopWaiting();
+      // If they went straight for the speaker, that click speaks for itself.
+      if (onButton) return;
+      if (sndBtn.getAttribute('aria-pressed') !== 'true') startMusic();
+    }
+    function waitForGesture() {
+      if (waiting) return;
+      waiting = true;
+      gestures.forEach(function (t) { document.addEventListener(t, onGesture, true); });
+    }
+
+    var musicConn = navigator.connection || {};
+    if (mutedByChoice()) {
+      setPressed(false);                 // they turned it off before; leave it off
+    } else if (musicConn.saveData) {
+      setPressed(false);                 // do not spend someone's data uninvited
+    } else {
+      startMusic(waitForGesture);
+    }
 
     // A dead control is worse than no control.
     music.addEventListener('error', function () {
