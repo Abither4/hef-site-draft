@@ -213,8 +213,25 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
 
 .photo{border-radius:3px;overflow:hidden;box-shadow:var(--shadow);margin:0}
 .photo img{width:100%;height:auto;display:block}
-@media (min-width:700px){.photo img{height:100%;object-fit:cover;aspect-ratio:4/3}
-  .photo-wide img{aspect-ratio:16/9}}
+/* Only photos that share a row get a forced shape, because a row has to stay
+   flush. A photo standing on its own keeps its own proportions and loses
+   nothing -- these come from phones, cameras and video stills, so a single
+   site-wide ratio would crop a quarter off some of them. */
+@media (min-width:700px){
+  .grid .photo img{height:100%;object-fit:cover;aspect-ratio:4/3}
+  .photo-wide img{height:100%;object-fit:cover;aspect-ratio:3/2}
+  .photo-cinema img{aspect-ratio:16/9}
+  /* A row of three photos stays a row of three. Left to auto-fit it breaks
+     to 2 + 1 on a tablet, which reads as a mistake. Cards may wrap; photos
+     may not. */
+  .photo-row{grid-template-columns:repeat(3,1fr)}
+}
+/* Two photos in one column tower over a tablet screen. Side by side they
+   sit at a sensible size and look deliberate. */
+@media (min-width:700px) and (max-width:899px){
+  .photo-pair{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .photo-pair .photo img{height:100%;object-fit:cover;aspect-ratio:4/3}
+}
 
 /* ================= feature band + gallery ================= */
 /* Lighter than the band section that follows it, so the two do not merge
@@ -227,7 +244,8 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
 .gallery-sec{background:var(--surface)}
 .gallery{display:grid;gap:clamp(.5rem,1.2vw,.9rem);grid-template-columns:1fr}
 @media (min-width:560px){.gallery{grid-template-columns:repeat(2,1fr)}
-  .gallery .photo img{aspect-ratio:4/3;height:100%;object-fit:cover}
+  /* 3:2 sits closest to what these tiles actually are, so the crop is small */
+  .gallery .photo img{aspect-ratio:3/2;height:100%;object-fit:cover}
   /* The one upright shot holds two rows so the grid stays flush. */
   .gallery .tall{grid-row:span 2}
   .gallery .tall img{aspect-ratio:auto}}
@@ -464,7 +482,7 @@ body.review .sec-tag{display:block}
       <p class="measure">We have been able to sustain and expand our work by equipping and empowering <strong>over 350 Haitians</strong> to serve and teach within their own communities. Thanks to our partnership with Maranatha Church, HEF has successfully grown its ministry efforts year after year.</p>
       <p class="measure">More than <strong>95 cents of every dollar</strong> goes straight to Haiti, funding the work that is going on there right now.</p>
     </div>
-    <div class="stack tight">
+    <div class="stack tight photo-pair">
       <figure class="photo">
         <img src="__IMG_FOUNDERS__" alt="Haiti Endowment Fund in its earliest years">
       </figure>
@@ -525,7 +543,7 @@ body.review .sec-tag{display:block}
         <p>Hope and practical help delivered to 125 recipients monthly.</p>
       </li>
     </ul>
-    <div class="grid g3" style="margin-top:.5rem">
+    <div class="grid g3 photo-row" style="margin-top:.5rem">
       <figure class="photo"><img src="__IMG_DOORWAY__" alt="Preschool students in the doorway of their classroom"></figure>
       <figure class="photo"><img src="__IMG_PORTRAIT__" alt="A student in her school uniform"></figure>
       <figure class="photo"><img src="__IMG_ELDER__" alt="An elder cared for through the ministry"></figure>
@@ -563,7 +581,7 @@ body.review .sec-tag{display:block}
       <article class="card"><h3>Cargo Shipments</h3><p>Containers of medications, Bibles, sound equipment and school supplies, arriving on an ongoing basis.</p></article>
       <article class="card"><h3>Wells &amp; Solar Water</h3><p>A new well and a solar-powered distribution system, most recently in a village on the plateau.</p></article>
     </div>
-    <div class="grid g3" style="margin-top:.5rem">
+    <div class="grid g3 photo-row" style="margin-top:.5rem">
       <figure class="photo"><img src="__IMG_COOKING__" alt="Preparing the daily school meal"></figure>
       <figure class="photo"><img src="__IMG_CAMP__" alt="Young people gathered for youth camp"></figure>
       <figure class="photo"><img src="__IMG_MEALTIME__" alt="Students receiving their hot meal at school"></figure>
@@ -593,7 +611,7 @@ body.review .sec-tag{display:block}
   <!-- .stack matters here: a bare block parent lets the img's height:100%
        resolve against the viewport instead of its 16:9 box. -->
   <div class="wrap stack" style="margin-bottom:clamp(1.6rem,3vw,2.6rem)">
-    <figure class="photo photo-wide"><img src="__IMG_CHURCH__" alt="A Maranatha congregation gathered for worship"></figure>
+    <figure class="photo photo-wide photo-cinema"><img src="__IMG_CHURCH__" alt="A Maranatha congregation gathered for worship"></figure>
   </div>
   <div class="wrap split">
     <div class="stack">
