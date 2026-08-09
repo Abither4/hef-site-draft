@@ -194,7 +194,9 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
 @media (max-width:699px){
   .hero{display:block;min-height:0;background:var(--forest-dark)}
   .hero-img{position:static;height:auto;aspect-ratio:4/3;object-position:center 40%}
-  .hero-vid{display:none}
+  /* The still is what gives the block its height; the film lies exactly on
+     top of it. Both are full width at 4:3, so they occupy the same box. */
+  .hero-vid{inset:0 auto auto 0;width:100%;height:auto;aspect-ratio:4/3;object-position:center 40%}
   .hero-scrim{display:none}
   .hero-inner{padding-block:1.9rem 2.4rem}
   .hero h1{font-size:clamp(2.6rem,13vw,3.6rem)}
@@ -829,29 +831,34 @@ body.review .sec-tag{display:block}
   });
 
   /* ---------------------------------------------------------------
-     Hero film. The <video> ships with no src on purpose: we only
-     attach the file once we know it is wanted and can play, so a
-     phone on cell data never downloads 2 MB it will not show.
+     Hero film. The <video> ships with no src on purpose, so the file
+     is only fetched once we know it is wanted -- and phones get their
+     own smaller cut, already cropped to the 4:3 block it sits in.
+
+     iOS will only play video inline and unprompted if it is muted and
+     carries playsinline, both of which are set. Low Power Mode refuses
+     it regardless, and Safari on an old iPhone may too; in every one
+     of those cases play() rejects, the film stays hidden and the still
+     photograph underneath is the hero. Nothing breaks.
   --------------------------------------------------------------- */
   var heroVid = document.getElementById('heroVid');
   if (heroVid) {
     var conn = navigator.connection || {};
     var wantVideo =
-      window.matchMedia('(min-width:700px)').matches &&
       !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
       !conn.saveData;
     if (wantVideo) {
-      heroVid.addEventListener('canplay', function () {
-        var p = heroVid.play();
-        if (p && p.then) {
-          p.then(function () { heroVid.classList.add('on'); })
-           .catch(function () { /* autoplay refused -- the still stays */ });
-        } else {
-          heroVid.classList.add('on');
-        }
+      var phone = !window.matchMedia('(min-width:700px)').matches;
+      // 'playing' is the honest signal: it fires when frames are actually
+      // moving, which canplay does not guarantee on iOS.
+      heroVid.addEventListener('playing', function () {
+        heroVid.classList.add('on');
       }, { once: true });
-      heroVid.src = 'hef-hero.mp4';
+      heroVid.muted = true;               // belt and braces: iOS checks this
+      heroVid.src = phone ? 'hef-hero-sm.mp4' : 'hef-hero.mp4';
       heroVid.load();
+      var hp = heroVid.play();
+      if (hp && hp.catch) hp.catch(function () { /* refused -- the still stays */ });
     }
   }
 

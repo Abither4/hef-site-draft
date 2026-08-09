@@ -24,7 +24,8 @@ cp hef-draft.html ../index.html
 
 ```
 index.html          generated - do not edit
-hef-hero.mp4        the hero loop. not inlined.
+hef-hero.mp4        the hero loop, desktop and tablet. not inlined.
+hef-hero-sm.mp4     the hero loop, phones. smaller and pre-cropped.
 hef-music.m4a       the background music loop. not inlined.
 src/template.html   the page. edit this.
 src/build.py        inlines fonts + photos
@@ -48,11 +49,22 @@ exclude. It sits next to `index.html`; the page requests it by relative path.
 `src/cut_hero.py` is the recipe: edit the `SHOTS` list and re-run it to recut.
 
 It is deliberately **not** inlined, and the page treats it as optional. The
-`<video>` ships with no `src`; the script attaches the file only above 700px
-wide, only when the visitor has not asked for reduced motion, and only when the
-browser is not reporting a metered connection. If any of that fails — or the
-file is missing, as it is in the Claude artifact preview — the still hero photo
+`<video>` ships with no `src`; the script attaches a file only when the visitor
+has not asked for reduced motion and the browser is not reporting a metered
+connection. If either of those fails — or playback is refused, or the file is
+missing, as it is in the Claude artifact preview — the still hero photo
 underneath is what shows. Nothing breaks.
+
+**Phones get `hef-hero-sm.mp4`**, half the size and already cropped to the 4:3
+block it sits in, so no bandwidth is spent on pixels the phone layout would
+throw away. On a phone the film lies exactly on top of the still rather than
+behind the headline, which is what keeps it from cropping to a sliver on a
+tall screen.
+
+iOS plays inline video unprompted only when it is `muted` and carries
+`playsinline`; both are set, and `muted` is also set again from script because
+iOS checks the property rather than the attribute. Low Power Mode refuses
+video regardless — that is a phone setting, not a bug, and the still shows.
 
 To recut it, the source is the full highlight film. Note that the film's own
 title cards contain a last name and a Deaf School reference, so **only
