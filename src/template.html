@@ -149,6 +149,12 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
 /* ================= hero ================= */
 .hero{position:relative;min-height:clamp(560px,84vh,880px);display:flex;align-items:flex-end;overflow:hidden}
 .hero-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+/* The looping film sits on top of the still and fades in only once it can
+   actually play. If anything goes wrong -- no autoplay, no file, reduced
+   motion, a metered connection -- the still underneath is the hero. */
+.hero-vid{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 45%;
+  opacity:0;transition:opacity 1.4s ease}
+.hero-vid.on{opacity:1}
 .hero-scrim{
   position:absolute;inset:0;
   background:
@@ -166,6 +172,7 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
 @media (max-width:699px){
   .hero{display:block;min-height:0;background:var(--forest-dark)}
   .hero-img{position:static;height:auto;aspect-ratio:4/3;object-position:center 40%}
+  .hero-vid{display:none}
   .hero-scrim{display:none}
   .hero-inner{padding-block:1.9rem 2.4rem}
   .hero h1{font-size:clamp(2.6rem,13vw,3.6rem)}
@@ -207,6 +214,26 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
 .photo img{width:100%;height:auto;display:block}
 @media (min-width:700px){.photo img{height:100%;object-fit:cover;aspect-ratio:4/3}
   .photo-wide img{aspect-ratio:16/9}}
+
+/* ================= feature band + gallery ================= */
+/* Lighter than the band section that follows it, so the two do not merge
+   into one long beige stretch. The portrait is shot on a pale backdrop,
+   so it needs a hairline to sit on. */
+.feature{background:var(--surface);padding-block:clamp(3rem,6vw,5rem)}
+.feature .photo{border:1px solid var(--line)}
+@media (min-width:900px){.feature-grid{grid-template-columns:.9fr 1.1fr}}
+
+.gallery-sec{background:var(--surface)}
+.gallery{display:grid;gap:clamp(.5rem,1.2vw,.9rem);grid-template-columns:1fr}
+@media (min-width:560px){.gallery{grid-template-columns:repeat(2,1fr)}
+  .gallery .photo img{aspect-ratio:4/3;height:100%;object-fit:cover}
+  /* The one upright shot holds two rows so the grid stays flush. */
+  .gallery .tall{grid-row:span 2}
+  .gallery .tall img{aspect-ratio:auto}}
+@media (min-width:1000px){.gallery{grid-template-columns:repeat(4,1fr)}}
+.gallery .photo{box-shadow:none;border-radius:2px}
+.gallery .photo img{transition:transform .6s ease}
+@media (hover:hover){.gallery .photo:hover img{transform:scale(1.04)}}
 
 /* ================= numbered steps ================= */
 .step{display:flex;gap:1.1rem;align-items:flex-start}
@@ -315,27 +342,29 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
 .seg button + button{border-left:1px solid rgba(240,238,216,.3)}
 .seg button[aria-pressed="true"]{background:var(--gold);color:#14261B}
 
-.amts{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem}
-.amt{
-  font-family:'Bebas Neue',Impact,sans-serif;font-size:1.5rem;letter-spacing:.02em;
-  padding:.75rem .4rem;cursor:pointer;border:1px solid rgba(240,238,216,.3);
-  background:transparent;color:var(--on-dark);border-radius:2px;
-  font-variant-numeric:tabular-nums;
-  transition:background-color .18s ease,color .18s ease,border-color .18s ease;
+/* One field, no suggested amounts -- the donor names their own number. */
+.amount-field{
+  display:flex;align-items:center;gap:.15rem;
+  background:rgba(5,20,11,.55);border:1px solid rgba(240,238,216,.3);border-radius:2px;
+  padding:.55rem .9rem;transition:border-color .18s ease;
 }
-.amt:hover{border-color:var(--gold)}
-.amt[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:#14261B}
-.amt.other{font-family:'Barlow',sans-serif;font-size:.82rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase}
-
-.custom-wrap{display:none;gap:.5rem;align-items:center}
-.custom-wrap.on{display:flex}
-.custom-wrap .cur{font-family:'Bebas Neue',Impact,sans-serif;font-size:1.6rem;color:var(--gold)}
-.custom-wrap input{
-  flex:1;font-family:'Barlow',sans-serif;font-size:1.05rem;font-weight:600;
-  background:rgba(5,20,11,.55);color:var(--on-dark);
-  border:1px solid rgba(240,238,216,.3);border-radius:2px;padding:.6rem .7rem;
+.amount-field:focus-within{border-color:var(--gold)}
+.amount-field .cur{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:2.1rem;line-height:1;
+  color:var(--gold);padding-right:.15rem;
 }
-.custom-wrap input:focus{outline:2px solid var(--gold);outline-offset:1px}
+.amount-field input{
+  flex:1;min-width:0;width:100%;
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:2.1rem;line-height:1.1;
+  letter-spacing:.02em;font-variant-numeric:tabular-nums;
+  background:transparent;color:var(--on-dark);border:0;padding:0;
+}
+.amount-field input:focus{outline:none}
+.amount-field input::placeholder{color:rgba(240,238,216,.28)}
+/* Kill the spinner arrows -- they look like a form, not a gift. */
+.amount-field input::-webkit-outer-spin-button,
+.amount-field input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.amount-field input[type=number]{-moz-appearance:textfield}
 
 .give-summary{
   font-size:.95rem;color:var(--on-dark-soft);
@@ -401,6 +430,7 @@ body.review .sec-tag{display:block}
 
 <header class="hero" data-sec><span class="sec-tag">S1 &middot; Hero</span>
   <img class="hero-img" src="__IMG_HERO__" alt="Students at their desks in a Maranatha school classroom">
+  <video class="hero-vid" id="heroVid" muted playsinline loop preload="none" aria-hidden="true" tabindex="-1"></video>
   <div class="hero-scrim"></div>
   <div class="hero-inner">
     <div class="wrap">
@@ -433,9 +463,14 @@ body.review .sec-tag{display:block}
       <p class="measure">We have been able to sustain and expand our work by equipping and empowering <strong>over 350 Haitians</strong> to serve and teach within their own communities. Thanks to our partnership with Maranatha Church, HEF has successfully grown its ministry efforts year after year.</p>
       <p class="measure">More than <strong>95 cents of every dollar</strong> goes straight to Haiti, funding the work that is going on there right now.</p>
     </div>
-    <figure class="photo">
-      <img src="__IMG_FOUNDERS__" alt="Haiti Endowment Fund in its earliest years">
-    </figure>
+    <div class="stack tight">
+      <figure class="photo">
+        <img src="__IMG_FOUNDERS__" alt="Haiti Endowment Fund in its earliest years">
+      </figure>
+      <figure class="photo">
+        <img src="__IMG_WALK__" alt="Walking the grounds of a Maranatha church">
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -497,6 +532,18 @@ body.review .sec-tag{display:block}
   </div>
 </section>
 
+<section class="feature" data-sec><span class="sec-tag">S4b &middot; Feature</span>
+  <div class="wrap split feature-grid">
+    <figure class="photo"><img src="__IMG_BOY__" alt="A student at one of the Maranatha schools"></figure>
+    <div class="stack">
+      <p class="eyebrow">One At A Time</p>
+      <h2>Every Number<br>Has A Face</h2>
+      <p class="lede">Three thousand five hundred meals a day is a number. This is what the number is for &mdash; one child, fed and taught and prayed over, five days a week.</p>
+      <p class="measure">Multiply that by thirteen schools across the Central Plateau, and that is the ministry.</p>
+    </div>
+  </div>
+</section>
+
 
 <section id="now" class="band" data-sec><span class="sec-tag">S5 &middot; Happening now</span>
   <div class="wrap stack">
@@ -523,7 +570,30 @@ body.review .sec-tag{display:block}
   </div>
 </section>
 
+<section class="gallery-sec" data-sec><span class="sec-tag">S5b &middot; Gallery</span>
+  <div class="wrap stack">
+    <div class="stack tight">
+      <p class="eyebrow">From The Plateau</p>
+      <h2>The Work, In Person</h2>
+    </div>
+    <div class="gallery">
+      <figure class="photo tall"><img src="__IMG_ELDERMAN__" alt="An elder receiving his monthly rice"></figure>
+      <figure class="photo"><img src="__IMG_WAVE__" alt="A young student at the lunch table"></figure>
+      <figure class="photo"><img src="__IMG_PINK__" alt="Students together at school"></figure>
+      <figure class="photo"><img src="__IMG_GROUP__" alt="Students in the doorway of their classroom"></figure>
+      <figure class="photo"><img src="__IMG_RICE__" alt="Children sharing the school meal"></figure>
+      <figure class="photo"><img src="__IMG_JUICE__" alt="A student with his lunch"></figure>
+      <figure class="photo"><img src="__IMG_TODDLER__" alt="One of the youngest students at lunch"></figure>
+    </div>
+  </div>
+</section>
+
 <section id="pray" class="dark" data-sec><span class="sec-tag">S6 &middot; The call to pray</span>
+  <!-- .stack matters here: a bare block parent lets the img's height:100%
+       resolve against the viewport instead of its 16:9 box. -->
+  <div class="wrap stack" style="margin-bottom:clamp(1.6rem,3vw,2.6rem)">
+    <figure class="photo photo-wide"><img src="__IMG_CHURCH__" alt="A Maranatha congregation gathered for worship"></figure>
+  </div>
   <div class="wrap split">
     <div class="stack">
       <p class="eyebrow on-dark">The Call To Pray</p>
@@ -570,6 +640,7 @@ body.review .sec-tag{display:block}
         <div><h3>Partner</h3><p>Partner with us and help serve alongside the work God is doing. We&rsquo;re continually finding new ways to serve, and as God leads, more needs arise. Stay connected with us &mdash; ask how you can help and receive updates on current opportunities to make a difference.</p></div>
       </div>
     </div>
+    <figure class="photo photo-wide" style="margin-top:.6rem"><img src="__IMG_DOORWIDE__" alt="Students gathered at the door of their classroom"></figure>
   </div>
 </section>
 
@@ -591,24 +662,15 @@ body.review .sec-tag{display:block}
         </div>
 
         <div>
-          <div class="field-label">Amount</div>
-          <div class="amts" role="group" aria-label="Gift amount">
-            <button type="button" class="amt" data-amt="25" aria-pressed="false">$25</button>
-            <button type="button" class="amt" data-amt="50" aria-pressed="true">$50</button>
-            <button type="button" class="amt" data-amt="100" aria-pressed="false">$100</button>
-            <button type="button" class="amt" data-amt="250" aria-pressed="false">$250</button>
-            <button type="button" class="amt" data-amt="500" aria-pressed="false">$500</button>
-            <button type="button" class="amt other" data-amt="other" aria-pressed="false">Other</button>
-          </div>
-          <div class="custom-wrap" id="customWrap">
+          <label class="field-label" for="customAmt">Amount</label>
+          <div class="amount-field">
             <span class="cur" aria-hidden="true">$</span>
-            <label class="sr-only" for="customAmt">Other amount in dollars</label>
-            <input type="number" id="customAmt" min="1" step="1" inputmode="numeric" placeholder="Enter an amount">
+            <input type="number" id="customAmt" min="1" step="1" inputmode="decimal" placeholder="0">
           </div>
         </div>
 
-        <p class="give-summary" id="giveSummary">A <strong>$50</strong> gift, one time.</p>
-        <button type="submit" class="btn btn-give" id="giveSubmit">Give $50</button>
+        <p class="give-summary" id="giveSummary">Enter an amount to continue.</p>
+        <button type="submit" class="btn btn-give" id="giveSubmit">Give</button>
         <p class="pending" id="givePending">Secure card checkout connects next week. Until then, please use the mailing address to the right &mdash; or call us and we&rsquo;ll take it over the phone.</p>
       </form>
 
@@ -712,6 +774,33 @@ body.review .sec-tag{display:block}
     navToggle.textContent = 'Menu';
   });
 
+  /* ---------------------------------------------------------------
+     Hero film. The <video> ships with no src on purpose: we only
+     attach the file once we know it is wanted and can play, so a
+     phone on cell data never downloads 2 MB it will not show.
+  --------------------------------------------------------------- */
+  var heroVid = document.getElementById('heroVid');
+  if (heroVid) {
+    var conn = navigator.connection || {};
+    var wantVideo =
+      window.matchMedia('(min-width:700px)').matches &&
+      !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+      !conn.saveData;
+    if (wantVideo) {
+      heroVid.addEventListener('canplay', function () {
+        var p = heroVid.play();
+        if (p && p.then) {
+          p.then(function () { heroVid.classList.add('on'); })
+           .catch(function () { /* autoplay refused -- the still stays */ });
+        } else {
+          heroVid.classList.add('on');
+        }
+      }, { once: true });
+      heroVid.src = 'hef-hero.mp4';
+      heroVid.load();
+    }
+  }
+
   var b = document.getElementById('rv');
   b.addEventListener('click', function () {
     var on = document.body.classList.toggle('review');
@@ -748,12 +837,11 @@ body.review .sec-tag{display:block}
 
   var form = document.getElementById('giveForm');
   if (form) {
-    var customWrap = document.getElementById('customWrap');
     var customAmt = document.getElementById('customAmt');
     var summary = document.getElementById('giveSummary');
     var submit = document.getElementById('giveSubmit');
     var pending = document.getElementById('givePending');
-    var state = { amount: 50, freq: 'once', custom: false };
+    var state = { amount: 0, freq: 'once' };
 
     function money(n) { return '$' + Number(n).toLocaleString('en-US'); }
 
@@ -762,7 +850,7 @@ body.review .sec-tag{display:block}
       var when = state.freq === 'monthly' ? 'every month' : 'one time';
       summary.innerHTML = valid
         ? 'A <strong>' + money(state.amount) + '</strong> gift, ' + when + '.'
-        : 'Choose an amount to continue.';
+        : 'Enter an amount to continue.';
       submit.textContent = valid ? 'Give ' + money(state.amount) : 'Give';
       submit.disabled = !valid || !STRIPE_ENDPOINT;
       pending.hidden = !!STRIPE_ENDPOINT;
@@ -778,25 +866,7 @@ body.review .sec-tag{display:block}
       });
     });
 
-    form.querySelectorAll('.amt').forEach(function (b) {
-      b.addEventListener('click', function () {
-        form.querySelectorAll('.amt').forEach(function (o) {
-          o.setAttribute('aria-pressed', String(o === b));
-        });
-        state.custom = b.dataset.amt === 'other';
-        customWrap.classList.toggle('on', state.custom);
-        if (state.custom) {
-          state.amount = Number(customAmt.value) || 0;
-          customAmt.focus();
-        } else {
-          state.amount = Number(b.dataset.amt);
-        }
-        render();
-      });
-    });
-
     customAmt.addEventListener('input', function () {
-      if (!state.custom) return;
       state.amount = Number(customAmt.value) || 0;
       render();
     });

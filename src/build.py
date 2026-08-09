@@ -22,7 +22,8 @@ html = html.replace('__FONTS__', font_css)
 for k, v in assets.items():
     html = html.replace('__IMG_%s__' % k.upper(), v)
 
-left = re.findall(r'__[A-Z_]+__', html)
+# Digits count: a token like __IMG_ELDER2__ used to slip past this guard.
+left = re.findall(r'__[A-Z0-9_]+__', html)
 if left:
     raise SystemExit('unreplaced tokens: %s' % sorted(set(left)))
 
