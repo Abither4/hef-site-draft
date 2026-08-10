@@ -413,6 +413,12 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--gold);outline-offse
   padding-top:.9rem;border-top:1px solid rgba(240,238,216,.18);
 }
 .give-summary strong{color:var(--gold);font-weight:700}
+.fee-cover{
+  display:flex;gap:.55rem;align-items:flex-start;cursor:pointer;
+  font-size:.88rem;color:var(--on-dark-soft);
+}
+.fee-cover input{accent-color:var(--gold);width:1rem;height:1rem;margin-top:.15rem;flex:none;cursor:pointer}
+.fee-cover strong{color:var(--gold);font-weight:700}
 .btn-give[disabled]{opacity:.55;cursor:not-allowed;transform:none}
 .pending{
   font-size:.78rem;letter-spacing:.04em;color:var(--mint);
@@ -725,6 +731,11 @@ body.review .sec-tag{display:block}
           </div>
         </div>
 
+        <label class="fee-cover" id="coverFeesRow" hidden>
+          <input type="checkbox" id="coverFees">
+          <span id="coverFeesLabel">Add a little more to cover card processing fees</span>
+        </label>
+
         <p class="give-summary" id="giveSummary">Enter an amount to continue.</p>
         <button type="submit" class="btn btn-give" id="giveSubmit">Give</button>
         <p class="pending" id="givePending">Secure card checkout connects next week. Until then, please use the mailing address to the right &mdash; or call us and we&rsquo;ll take it over the phone.</p>
@@ -1025,7 +1036,7 @@ body.review .sec-tag{display:block}
      amount + frequency; submit() is the only place that needs to change.
      Leave STRIPE_ENDPOINT null and the button stays honestly disabled.
   --------------------------------------------------------------- */
-  var STRIPE_ENDPOINT = null;
+  var STRIPE_ENDPOINT = 'https://hef-give.vercel.app/api/checkout';
 
   var form = document.getElementById('giveForm');
   if (form) {
@@ -1033,18 +1044,39 @@ body.review .sec-tag{display:block}
     var summary = document.getElementById('giveSummary');
     var submit = document.getElementById('giveSubmit');
     var pending = document.getElementById('givePending');
-    var state = { amount: 0, freq: 'once' };
+    var coverRow = document.getElementById('coverFeesRow');
+    var coverBox = document.getElementById('coverFees');
+    var coverLabel = document.getElementById('coverFeesLabel');
+    var state = { amount: 0, freq: 'once', cover: false, busy: false };
 
-    function money(n) { return '$' + Number(n).toLocaleString('en-US'); }
+    // Stripe standard card rate. Gross-up so HEF nets the intended gift.
+    var FEE_PCT = 0.029, FEE_FIXED = 0.30;
+    function grossUp(g) { return Math.round(((g + FEE_FIXED) / (1 - FEE_PCT)) * 100) / 100; }
+
+    function money(n) {
+      return '$' + Number(n).toLocaleString('en-US',
+        Number.isInteger(n) ? {} : { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function total() {
+      return state.cover ? grossUp(state.amount) : state.amount;
+    }
 
     function render() {
       var valid = state.amount > 0;
       var when = state.freq === 'monthly' ? 'every month' : 'one time';
+      coverRow.hidden = !valid;
+      if (valid) {
+        var fee = Math.round((grossUp(state.amount) - state.amount) * 100) / 100;
+        coverLabel.innerHTML = 'Add <strong>' + money(fee) + '</strong> to cover card processing fees so 100% of my gift goes to Haiti';
+      }
       summary.innerHTML = valid
-        ? 'A <strong>' + money(state.amount) + '</strong> gift, ' + when + '.'
+        ? 'A <strong>' + money(total()) + '</strong> gift, ' + when + '.'
+          + (state.cover ? ' (' + money(state.amount) + ' + fees)' : '')
         : 'Enter an amount to continue.';
-      submit.textContent = valid ? 'Give ' + money(state.amount) : 'Give';
-      submit.disabled = !valid || !STRIPE_ENDPOINT;
+      submit.textContent = state.busy ? 'One moment…'
+        : (valid ? 'Give ' + money(total()) : 'Give');
+      submit.disabled = !valid || !STRIPE_ENDPOINT || state.busy;
       pending.hidden = !!STRIPE_ENDPOINT;
     }
 
@@ -1063,12 +1095,37 @@ body.review .sec-tag{display:block}
       render();
     });
 
+    coverBox.addEventListener('change', function () {
+      state.cover = coverBox.checked;
+      render();
+    });
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
-      if (!STRIPE_ENDPOINT) return;
-      // Wired next week: create the Checkout Session, then mount it here.
+      if (!STRIPE_ENDPOINT || state.busy || !(state.amount > 0)) return;
+      state.busy = true;
+      render();
+      fetch(STRIPE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: state.amount, freq: state.freq, coverFees: state.cover })
+      }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+        .then(function (res) {
+          if (res.ok && res.d.url) { window.location.href = res.d.url; return; }
+          throw new Error(res.d.error || 'Could not start checkout.');
+        })
+        .catch(function (err) {
+          state.busy = false;
+          render();
+          summary.innerHTML = '<strong>' + (err.message || 'Something went wrong.') + '</strong> Or give by mail or phone, to the right.';
+        });
     });
 
     render();
+
+    // Back from a completed Stripe checkout (after render, so it isn't overwritten).
+    if (/[?&]thanks=1/.test(window.location.search)) {
+      summary.innerHTML = '<strong>Thank you!</strong> Your gift was received &mdash; a receipt is on its way to your email.';
+    }
   }
 </script>
