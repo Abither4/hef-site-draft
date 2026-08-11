@@ -1,0 +1,241 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Give — Haiti Endowment Fund</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="__IMG_FAVICON__">
+<meta name="description" content="Give to Haiti Endowment Fund — a 501(c)(3) ministry serving the Central Plateau of Haiti.">
+
+<style>
+__FONTS__
+
+:root{
+  --forest:#0E5930;
+  --forest-deep:#0A3F22;
+  --forest-dark:#072B17;
+  --mint:#8FCFA0;
+  --gold:#F2CB14;
+  --gold-deep:#C9A400;
+  --on-dark:#F0EED8;
+  --on-dark-soft:#B3CDBB;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;min-height:100vh;background:var(--forest-dark);color:var(--on-dark);
+  font-family:'Barlow',system-ui,-apple-system,'Segoe UI',sans-serif;
+  font-size:clamp(1rem,.96rem + .2vw,1.075rem);line-height:1.62;
+  -webkit-font-smoothing:antialiased;
+  display:flex;flex-direction:column;align-items:center;
+  padding:clamp(1.25rem,4vw,3rem) 1.25rem 3rem;
+}
+.wrap{width:100%;max-width:520px;display:flex;flex-direction:column;gap:1.4rem}
+.logo{display:block;width:min(220px,60vw);margin:0 auto 1rem}
+h1{
+  font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;letter-spacing:.02em;
+  font-size:clamp(2.4rem,8vw,3.4rem);line-height:1.02;margin:0;text-align:center;color:var(--on-dark);
+}
+.lede{margin:0;text-align:center;color:var(--on-dark-soft)}
+
+.give-panel{
+  background:rgba(240,238,216,.06);border:1px solid rgba(240,238,216,.22);
+  border-top:3px solid var(--gold);padding:1.75rem 1.6rem;
+  display:flex;flex-direction:column;gap:1.15rem;
+}
+.field-label{
+  font-size:.7rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--mint);margin-bottom:.55rem;
+}
+.seg{display:grid;grid-template-columns:1fr 1fr;border:1px solid rgba(240,238,216,.3);border-radius:2px;overflow:hidden}
+.seg button{
+  font-family:'Barlow',sans-serif;font-weight:700;font-size:.78rem;letter-spacing:.12em;
+  text-transform:uppercase;padding:.7rem .5rem;border:0;cursor:pointer;
+  background:transparent;color:var(--on-dark);transition:background-color .18s ease,color .18s ease;
+}
+.seg button + button{border-left:1px solid rgba(240,238,216,.3)}
+.seg button[aria-pressed="true"]{background:var(--gold);color:#14261B}
+.amount-field{
+  display:flex;align-items:center;gap:.15rem;
+  background:rgba(5,20,11,.55);border:1px solid rgba(240,238,216,.3);border-radius:2px;
+  padding:.55rem .9rem;transition:border-color .18s ease;
+}
+.amount-field:focus-within{border-color:var(--gold)}
+.amount-field .cur{
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:2.1rem;line-height:1;
+  color:var(--gold);padding-right:.15rem;
+}
+.amount-field input{
+  flex:1;min-width:0;width:100%;
+  font-family:'Bebas Neue',Impact,sans-serif;font-size:2.1rem;line-height:1.1;
+  letter-spacing:.02em;font-variant-numeric:tabular-nums;
+  background:transparent;color:var(--on-dark);border:0;padding:0;
+}
+.amount-field input:focus{outline:none}
+.amount-field input::placeholder{color:rgba(240,238,216,.28)}
+.amount-field input::-webkit-outer-spin-button,
+.amount-field input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.amount-field input[type=number]{-moz-appearance:textfield}
+.fee-cover{
+  display:flex;gap:.55rem;align-items:flex-start;cursor:pointer;
+  font-size:.88rem;color:var(--on-dark-soft);
+}
+.fee-cover input{accent-color:var(--gold);width:1rem;height:1rem;margin-top:.15rem;flex:none;cursor:pointer}
+.fee-cover strong{color:var(--gold);font-weight:700}
+.give-summary{
+  font-size:.95rem;color:var(--on-dark-soft);
+  padding-top:.9rem;border-top:1px solid rgba(240,238,216,.18);
+}
+.give-summary strong{color:var(--gold);font-weight:700}
+.btn-give{
+  font-family:'Barlow',sans-serif;font-weight:700;font-size:.85rem;letter-spacing:.14em;
+  text-transform:uppercase;padding:.95rem 1.2rem;border:1px solid var(--gold);border-radius:2px;
+  background:var(--gold);color:#14261B;cursor:pointer;transition:background-color .18s ease,transform .18s ease;
+}
+.btn-give:hover{background:var(--gold-deep);border-color:var(--gold-deep);transform:translateY(-1px)}
+.btn-give[disabled]{opacity:.55;cursor:not-allowed;transform:none}
+.pp-alt{font-size:.85rem;color:var(--on-dark-soft);margin:0;text-align:center}
+.pp-alt a{color:var(--gold);font-weight:700;text-decoration:none}
+.pp-alt a:hover{text-decoration:underline}
+
+.give-box{
+  border:1px solid rgba(240,238,216,.22);border-top:3px solid var(--gold);
+  padding:1.4rem 1.5rem;display:flex;flex-direction:column;gap:.5rem;
+  background:rgba(240,238,216,.05);font-size:.95rem;color:var(--on-dark-soft);
+}
+.give-box h2{
+  font-family:'Bebas Neue',Impact,sans-serif;font-weight:400;letter-spacing:.03em;
+  font-size:1.4rem;margin:0;color:var(--on-dark);
+}
+.give-box a{color:var(--gold);font-weight:700;text-decoration:none}
+.foot{font-size:.78rem;color:var(--on-dark-soft);text-align:center;margin-top:1rem}
+.foot a{color:var(--on-dark-soft)}
+</style>
+
+<div class="wrap">
+  <a href="/"><img class="logo" src="__IMG_LOGO_LIGHT__" alt="Haiti Endowment Fund"></a>
+  <h1>Give To Haiti</h1>
+  <p class="lede">Your gift goes to work immediately &mdash; supporting local churches, meals, classrooms, clean water and medical care across the Central Plateau.</p>
+
+  <form class="give-panel" id="giveForm">
+    <div>
+      <div class="field-label">How often</div>
+      <div class="seg" role="group" aria-label="Giving frequency">
+        <button type="button" class="freq" data-freq="once" aria-pressed="true">One time</button>
+        <button type="button" class="freq" data-freq="monthly" aria-pressed="false">Monthly</button>
+      </div>
+    </div>
+
+    <div>
+      <label class="field-label" for="customAmt">Amount</label>
+      <div class="amount-field">
+        <span class="cur" aria-hidden="true">$</span>
+        <input type="number" id="customAmt" min="1" step="1" inputmode="decimal" placeholder="0">
+      </div>
+    </div>
+
+    <label class="fee-cover" id="coverFeesRow" hidden>
+      <input type="checkbox" id="coverFees">
+      <span id="coverFeesLabel">Add a little more to cover card processing fees</span>
+    </label>
+
+    <p class="give-summary" id="giveSummary">Enter an amount to continue.</p>
+    <button type="submit" class="btn-give" id="giveSubmit">Give</button>
+    <p class="pp-alt">Prefer PayPal? <a href="https://www.paypal.com/donate/?business=truebets5%40gmail.com&amp;item_name=Gift+to+Haiti+Endowment+Fund&amp;currency_code=USD" target="_blank" rel="noopener">Give through PayPal</a></p>
+  </form>
+
+  <div class="give-box">
+    <h2>Give By Mail</h2>
+    <p style="margin:0">Make checks payable to Haiti Endowment Fund.<br>
+    Haiti Endowment Fund<br>P.O. Box 743<br>Temecula, CA 92593</p>
+    <p style="margin:.4rem 0 0">Prefer to give over the phone? Call <a href="tel:+19515019822">(951) 501-9822</a>.</p>
+  </div>
+
+  <p class="foot">Haiti Endowment Fund is a 501(c)(3) nonprofit &mdash; gifts are tax-deductible. &middot; <a href="/">haitiendowmentfund.org</a></p>
+</div>
+
+<script>
+  var STRIPE_ENDPOINT = 'https://hef-give.vercel.app/api/checkout';
+
+  var form = document.getElementById('giveForm');
+  var customAmt = document.getElementById('customAmt');
+  var summary = document.getElementById('giveSummary');
+  var submit = document.getElementById('giveSubmit');
+  var coverRow = document.getElementById('coverFeesRow');
+  var coverBox = document.getElementById('coverFees');
+  var coverLabel = document.getElementById('coverFeesLabel');
+  var state = { amount: 0, freq: 'once', cover: false, busy: false };
+
+  // Stripe standard card rate. Gross-up so HEF nets the intended gift.
+  var FEE_PCT = 0.029, FEE_FIXED = 0.30;
+  function grossUp(g) { return Math.round(((g + FEE_FIXED) / (1 - FEE_PCT)) * 100) / 100; }
+
+  function money(n) {
+    return '$' + Number(n).toLocaleString('en-US',
+      Number.isInteger(n) ? {} : { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function total() { return state.cover ? grossUp(state.amount) : state.amount; }
+
+  function render() {
+    var valid = state.amount > 0;
+    var when = state.freq === 'monthly' ? 'every month' : 'one time';
+    coverRow.hidden = !valid;
+    if (valid) {
+      var fee = Math.round((grossUp(state.amount) - state.amount) * 100) / 100;
+      coverLabel.innerHTML = 'Add <strong>' + money(fee) + '</strong> to cover card processing fees so 100% of my gift goes to Haiti';
+    }
+    summary.innerHTML = valid
+      ? 'A <strong>' + money(total()) + '</strong> gift, ' + when + '.'
+        + (state.cover ? ' (' + money(state.amount) + ' + fees)' : '')
+      : 'Enter an amount to continue.';
+    submit.textContent = state.busy ? 'One moment…' : (valid ? 'Give ' + money(total()) : 'Give');
+    submit.disabled = !valid || state.busy;
+  }
+
+  form.querySelectorAll('.freq').forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.freq = b.dataset.freq;
+      form.querySelectorAll('.freq').forEach(function (o) {
+        o.setAttribute('aria-pressed', String(o === b));
+      });
+      render();
+    });
+  });
+
+  customAmt.addEventListener('input', function () {
+    state.amount = Number(customAmt.value) || 0;
+    render();
+  });
+
+  coverBox.addEventListener('change', function () {
+    state.cover = coverBox.checked;
+    render();
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    if (state.busy || !(state.amount > 0)) return;
+    state.busy = true;
+    render();
+    fetch(STRIPE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: state.amount, freq: state.freq, coverFees: state.cover, path: '/give/' })
+    }).then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+      .then(function (res) {
+        if (res.ok && res.d.url) { window.location.href = res.d.url; return; }
+        throw new Error(res.d.error || 'Could not start checkout.');
+      })
+      .catch(function (err) {
+        state.busy = false;
+        render();
+        summary.innerHTML = '<strong>' + (err.message || 'Something went wrong.') + '</strong> Or give by mail or phone, below.';
+      });
+  });
+
+  render();
+
+  // Back from a completed Stripe checkout (after render, so it isn't overwritten).
+  if (/[?&]thanks=1/.test(window.location.search)) {
+    summary.innerHTML = '<strong>Thank you!</strong> Your gift was received &mdash; a receipt is on its way to your email.';
+  }
+</script>

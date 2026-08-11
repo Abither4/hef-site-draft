@@ -17,16 +17,22 @@ for f in fonts:
     )
 font_css = ''.join(face)
 
-html = open(os.path.join(HERE, 'template.html'), encoding='utf-8').read()
-html = html.replace('__FONTS__', font_css)
-for k, v in assets.items():
-    html = html.replace('__IMG_%s__' % k.upper(), v)
+PAGES = [
+    ('template.html', 'hef-draft.html'),
+    ('give.html', 'hef-give-page.html'),
+]
 
-# Digits count: a token like __IMG_ELDER2__ used to slip past this guard.
-left = re.findall(r'__[A-Z0-9_]+__', html)
-if left:
-    raise SystemExit('unreplaced tokens: %s' % sorted(set(left)))
+for src, dst in PAGES:
+    html = open(os.path.join(HERE, src), encoding='utf-8').read()
+    html = html.replace('__FONTS__', font_css)
+    for k, v in assets.items():
+        html = html.replace('__IMG_%s__' % k.upper(), v)
 
-out = os.path.join(HERE, 'hef-draft.html')
-open(out, 'w', encoding='utf-8').write(html)
-print('wrote %s  %.2f MB' % (out, len(html.encode('utf-8')) / 1024 / 1024))
+    # Digits count: a token like __IMG_ELDER2__ used to slip past this guard.
+    left = re.findall(r'__[A-Z0-9_]+__', html)
+    if left:
+        raise SystemExit('%s: unreplaced tokens: %s' % (src, sorted(set(left))))
+
+    out = os.path.join(HERE, dst)
+    open(out, 'w', encoding='utf-8').write(html)
+    print('wrote %s  %.2f MB' % (out, len(html.encode('utf-8')) / 1024 / 1024))
