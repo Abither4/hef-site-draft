@@ -132,10 +132,13 @@ h1{
       </div>
     </div>
 
-    <label class="fee-cover" id="coverFeesRow" hidden>
-      <input type="checkbox" id="coverFees">
-      <span id="coverFeesLabel">Add a little more to cover card processing fees</span>
-    </label>
+    <div id="coverFeesRow" hidden>
+      <div class="field-label">Make the most of my gift</div>
+      <label class="fee-cover">
+        <input type="checkbox" id="coverFees">
+        <span id="coverFeesLabel">I want to add a little more to help offset processing fees</span>
+      </label>
+    </div>
 
     <p class="give-summary" id="giveSummary">Enter an amount to continue.</p>
     <button type="submit" class="btn-give" id="giveSubmit">Give</button>
@@ -181,7 +184,7 @@ h1{
     coverRow.hidden = !valid;
     if (valid) {
       var fee = Math.round((grossUp(state.amount) - state.amount) * 100) / 100;
-      coverLabel.innerHTML = 'Add <strong>' + money(fee) + '</strong> to cover card processing fees so 100% of my gift goes to Haiti';
+      coverLabel.innerHTML = 'I want to add <strong>' + money(fee) + '</strong> to my gift to help offset processing fees, so 100% of my contribution goes to Haiti.';
     }
     summary.innerHTML = valid
       ? 'A <strong>' + money(total()) + '</strong> gift, ' + when + '.'
